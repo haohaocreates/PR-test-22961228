@@ -1,4 +1,3 @@
-import comfy
 
 class ChessPiecePromptNode:
     def __init__(self):

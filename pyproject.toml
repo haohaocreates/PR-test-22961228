@@ -1,20 +1,14 @@
-name: Publish to Comfy registry
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - "pyproject.toml"
+[project]
+name = "chess-menu"
+description = "Helps with tha chess peices"
+license = "LICENSE"
+dependencies = ["GitPython", "PyGithub", "matrix-client==0.4.0", "transformers", "huggingface-hub>0.20", "typer", "rich", "typing-extensions"]
 
-jobs:
-  publish-node:
-    name: Publish Custom Node to registry
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-      - name: Publish Custom Node
-        uses: Comfy-Org/publish-node-action@main
-        with:
-          personal_access_token: ${{ secrets.49341abe-dd5f-4182-80dd-1b7f0c058b3c }}
+[project.urls]
+Repository = "https://github.com/owenreilly/test.git"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = "owenreilly"
+DisplayName = "Chess-Manager"
+Icon = ""

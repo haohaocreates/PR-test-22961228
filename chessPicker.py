@@ -1,8 +1,9 @@
-
-import base64
+import math
+import numpy as np
 import os
+from PIL import Image
 
-class ChessPiecePrompt:
+class ImageSizer:
     def __init__(self):
         pass
 
@@ -10,57 +11,66 @@ class ChessPiecePrompt:
     def INPUT_TYPES(s):
         return {
             "required": {
-                "chess_piece": (["King", "Queen", "Bishop", "Knight", "Rook", "Pawn"],),
-            }
-        }
-
-    RETURN_TYPES = ("STRING", "IMAGE")
-    RETURN_NAMES = ("positive_prompt", "chess_image")
-
-    FUNCTION = "generate_prompt"
-
-    CATEGORY = "Custom"
-
-    def generate_prompt(self, chess_piece):
-        prompts = {
+                
             "King": "(solo) chess piece (realistic:1.5), (detailed:1.3), (human-like:1.4), (wearing a chess costume:1.3), (metallic sheen:0.9), (polished:1.2), (intricate engravings:1.1), maintaining the shape and features of a king, (full body:1.2), (high resolution:1.0), (sharp focus:1.0), (realistic textures:1.3), (dramatic lighting:1.0), (holding a sword:1.3)",
             "Queen": "(solo) chess piece (realistic:1.5), (detailed:1.3), (human-like:1.4), (wearing a chess costume:1.3), (metallic sheen:0.9), (polished:1.2), (intricate engravings:1.1), maintaining the shape and features of a queen, (full body:1.2), (high resolution:1.0), (sharp focus:1.0), (realistic textures:1.3), (dramatic lighting:1.0)",
             "Rook": "(solo) chess piece (realistic:1.5), (detailed:1.3), (human-like:1.4), (wearing a chess costume:1.3), (metallic sheen:0.9), (polished:1.2), (intricate engravings:1.1), maintaining the shape and features of a rook, (full body:1.2), (high resolution:1.0), (sharp focus:1.0), (realistic textures:1.3), (dramatic lighting:1.0)",
             "Bishop": "(solo) chess piece (realistic:1.5), (detailed:1.3), (human-like:1.4), (wearing a chess costume:1.3), (metallic sheen:0.9), (polished:1.2), (intricate engravings:1.1), maintaining the shape and features of a bishop, (full body:1.2), (high resolution:1.0), (sharp focus:1.0), (realistic textures:1.3), (dramatic lighting:1.0)",
             "Knight": "(solo) chess piece (realistic:1.5), (detailed:1.3), (human-like:1.4), (wearing a chess costume:1.3), (metallic sheen:0.9), (polished:1.2), (intricate engravings:1.1), maintaining the shape and features of a knight, (full body:1.2), (high resolution:1.0), (sharp focus:1.0), (realistic textures:1.3), (dramatic lighting:1.0), (riding a horse:1.3)",
             "Pawn": "(solo) chess piece (realistic:1.5), (detailed:1.3), (human-like:1.4), (wearing a chess costume:1.3), (metallic sheen:0.9), (polished:1.2), (intricate engravings:1.1), maintaining the shape and features of a pawn, (full body:1.2), (high resolution:1.0), (sharp focus:1.0), (realistic textures:1.3), (dramatic lighting:1.0)"
-        }\
-
-        # Define the path to the images directory
-        images_dir = os.path.join(os.path.dirname(__file__), 'images')
-
-        # Base64 encoded images
-        images = {
-            "King": os.path.join(images_dir, 'king.png'),
-            "Queen": os.path.join(images_dir, 'queen.png'),
-            "Bishop": os.path.join(images_dir, 'bishop.png'),
-            "Knight": os.path.join(images_dir, 'knight.png'),
-            "Rook": os.path.join(images_dir, 'rook.png'),
-            "Pawn": os.path.join(images_dir, 'pawn.png')
+        }
         }
 
-        # Convert image to base64
-        def encode_image_to_base64(image_path):
-            with open(image_path, "rb") as image_file:
-                return base64.b64encode(image_file.read()).decode('utf-8')
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("Output Image",)
+    FUNCTION = "run"
+    CATEGORY = "CodyCustom"
 
-        prompt = prompts[chess_piece]
-        image_base64 = encode_image_to_base64(images[chess_piece])
+    def run(self, model_type, aspect_ratio_width, aspect_ratio_height, chess_piece):
+        # Define the total pixel counts for SD and SDXL
+        total_pixels = {
+            'SD': 512 * 512,
+            'SDXL': 1024 * 1024
+        }
 
-        # Decode the image from base64
-        image_data = base64.b64decode(image_base64)
+        # Calculate the number of total pixels based on model type
+        pixels = total_pixels.get(model_type, 0)
 
-        return (prompt, image_data)
+        # Calculate the aspect ratio decimal
+        aspect_ratio_decimal = aspect_ratio_width / aspect_ratio_height
+
+        # Calculate width and height
+        width = math.sqrt(pixels * aspect_ratio_decimal)
+        height = pixels / width
+
+        # Generate prompts based on chess piece
+        prompts = {
+            "king": "(full body, human wearing a costume of king, crown, sword:1.0), (medieval attire, standing tall:1.0), (detailed face, realistic features, natural lighting:1.0), (metallic sheen:0.9), (detailed costume, intricate design)",
+            "queen": "(full body, human wearing a costume of queen, crown, regal attire:1.0), (medieval attire, graceful stance:1.0), (detailed face, realistic features, natural lighting:1.0), (metallic sheen:0.9), (detailed costume, intricate design)",
+            "bishop": "(full body, human wearing a costume of bishop, religious attire:1.0), (medieval attire, holding a staff:1.0), (detailed face, realistic features, natural lighting:1.0), (metallic sheen:0.9), (detailed costume, intricate design)",
+            "knight": "(full body, human wearing a costume of knight, armor, on horseback:1.0), (medieval attire, holding a sword:1.0), (detailed face, realistic features, natural lighting:1.0), (metallic sheen:0.9), (detailed costume, intricate design)",
+            "rook": "(full body, human wearing a costume of rook, castle-like attire:1.0), (medieval attire, standing firm:1.0), (detailed face, realistic features, natural lighting:1.0), (metallic sheen:0.9), (detailed costume, intricate design)",
+            "pawn": "(full body, human wearing a costume of pawn, simple attire:1.0), (medieval attire, determined stance:1.0), (detailed face, realistic features, natural lighting:1.0), (metallic sheen:0.9), (detailed costume, intricate design)"
+        }
+
+        # Get the prompt for the selected chess piece
+        prompt = prompts.get(chess_piece, "")
+
+        # Load the corresponding chess piece image
+        image_path = os.path.join("custom_nodes/ChessJawn/images", f"{chess_piece}.png")
+        if not os.path.exists(image_path):
+            raise FileNotFoundError(f"Image not found: {image_path}")
+
+        image = Image.open(image_path)
+        image = image.resize((int(round(width)), int(round(height))), Image.ANTIALIAS)
+        image_array = np.array(image)
+
+        return (image_array,)
 
 NODE_CLASS_MAPPINGS = {
-    "ChessPiecePrompt": ChessPiecePrompt
+    "ImageSizer": ImageSizer
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "ChessPiecePrompt": "Chess Piece Prompt"
+    "ImageSizer": "Image Sizer"
 }

@@ -1,6 +1,5 @@
 import os
 import numpy as np
-import torch
 from PIL import Image
 
 class ChessPiecePrompt:
@@ -15,7 +14,7 @@ class ChessPiecePrompt:
             }
         }
 
-    RETURN_TYPES = ("STRING", "TENSOR")
+    RETURN_TYPES = ("STRING", "IMAGE")
     RETURN_NAMES = ("prompt", "image")
 
     FUNCTION = "generate_prompt"
@@ -26,8 +25,7 @@ class ChessPiecePrompt:
         with Image.open(image_path) as img:
             img = img.convert('RGB')
             image_array = np.array(img)
-            image_tensor = torch.tensor(image_array).permute(2, 0, 1).unsqueeze(0)
-            return image_tensor
+            return image_array
 
     def generate_prompt(self, piece):
         prompt_map = {
@@ -40,8 +38,8 @@ class ChessPiecePrompt:
         }
 
         image_path = os.path.join(os.path.dirname(__file__), "images", f"{piece.lower()}.png")
-        image_tensor = self.load_image(image_path)
-        return (prompt_map[piece], image_tensor)
+        image_array = self.load_image(image_path)
+        return (prompt_map[piece], image_array)
 
 NODE_CLASS_MAPPINGS = {
     "ChessPiecePrompt": ChessPiecePrompt

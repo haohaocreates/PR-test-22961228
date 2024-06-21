@@ -1,10 +1,12 @@
 from .chessPicker import ChessPiecePrompt
+from .extraPicker import ExtraPicker
 
-# Ensure the module is registered with ComfyUI
 NODE_CLASS_MAPPINGS = {
-    "ChessPiecePrompt": ChessPiecePrompt
+    "ChessPiecePrompt": ChessPiecePrompt,
+    "ExtraPicker": ExtraPicker
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "ChessPiecePrompt": "Chess Piece Prompt"
+    "ChessPiecePrompt": "Chess Piece Prompt",
+    "ExtraPicker": "Extra Picker"
 }

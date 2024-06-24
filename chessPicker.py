@@ -33,18 +33,18 @@ class ChessPiecePrompt:
 
     def generate_prompt(self, piece, color):
         prompt_map = {
-            "King": "(solo) chess piece (realistic:2), (detailed:1.3), (human-like:1.4), (wearing a chess costume:1.3), (metallic sheen:0.7), (polished:1.2), (intricate engravings:1.1), maintaining the shape and features of a king, (full body:1.2), (high resolution:1.0), (sharp focus:1.0), (realistic textures:1.3), (dramatic lighting:1.0), (holding a sword:1.3)",
-            "Queen": "(solo) chess piece (realistic:2), (detailed:1.3), (human-like:1.4), (wearing a chess costume:1.3), (metallic sheen:0.7), (polished:1.2), (intricate engravings:1.1), maintaining the shape and features of a queen, (full body:1.2), (high resolution:1.0), (sharp focus:1.0), (realistic textures:1.3), (dramatic lighting:1.0)",
-            "Rook": "(solo) chess piece (realistic:2), (detailed:1.3), (human-like:1.4), (wearing a chess costume:1.3), (metallic sheen:0.7), (polished:1.2), (intricate engravings:1.1), maintaining the shape and features of a rook, (full body:1.2), (high resolution:1.0), (sharp focus:1.0), (realistic textures:1.3), (dramatic lighting:1.0)",
-            "Bishop": "(solo) chess piece (realistic:2), (detailed:1.3), (human-like:1.4), (wearing a chess costume:1.3), (metallic sheen:0.7), (polished:1.2), (intricate engravings:1.1), maintaining the shape and features of a bishop, (full body:1.2), (high resolution:1.0), (sharp focus:1.0), (realistic textures:1.3), (dramatic lighting:1.0)",
-            "Knight": "(solo) chess piece (realistic:2), (detailed:1.3), (human-like:1.4), (wearing a chess costume:1.3), (metallic sheen:0.7), (polished:1.2), (intricate engravings:1.1), maintaining the shape and features of a knight, (full body:1.2), (high resolution:1.0), (sharp focus:1.0), (realistic textures:1.3), (dramatic lighting:1.0), (riding a horse:1.3)",
-            "Pawn": "(solo) chess piece (realistic:2), (detailed:1.3), (human-like:1.4), (wearing a chess costume:1.3), (metallic sheen:0.7), (polished:1.2), (intricate engravings:1.1), maintaining the shape and features of a pawn, (full body:1.2), (high resolution:1.0), (sharp focus:1.0), (realistic textures:1.3), (dramatic lighting:1.0)"
+            "King": "(solo) chess piece (realistic:2), (detailed:1.3), (human-like:1.4), (wearing a chess costume:1.3), (burly:1.2), (metallic sheen:0.7), (chiselled marble-like texture:1.2), (polished:1.2), (intricate engravings:1.1), maintaining the shape and features of a king, (full body:1.2), (high resolution:1.0), (sharp focus:1.0), (realistic textures:1.3), (dramatic lighting:1.0), (holding a sword:1.3)",
+            "Queen": "(solo) chess piece (realistic:2), (detailed:1.3), (human-like:1.4), (wearing a chess costume:1.3), (metallic sheen:0.7), (chiselled marble-like texture:1.2), (polished:1.2), (intricate engravings:1.1), maintaining the shape and features of a queen, (full body:1.2), (high resolution:1.0), (sharp focus:1.0), (realistic textures:1.3), (dramatic lighting:1.0)",
+            "Rook": "(solo) chess piece (realistic:2), (detailed:1.3), (human-like:1.4), (wearing a chess costume:1.3), (metallic sheen:0.7), (chiselled marble-like texture:1.2), (polished:1.2), (intricate engravings:1.1), maintaining the shape and features of a rook, (full body:1.2), (high resolution:1.0), (sharp focus:1.0), (realistic textures:1.3), (dramatic lighting:1.0)",
+            "Bishop": "(solo) chess piece (realistic:2), (detailed:1.3), (human-like:1.4), (wearing a chess costume:1.3), (metallic sheen:0.7), (chiselled marble-like texture:1.2), (polished:1.2), (intricate engravings:1.1), maintaining the shape and features of a bishop, (full body:1.2), (high resolution:1.0), (sharp focus:1.0), (realistic textures:1.3), (dramatic lighting:1.0)",
+            "Knight": "(solo) chess piece (realistic:2), (detailed:1.3), (human-like:1.4), (wearing a chess costume:1.3), (metallic sheen:0.7), (chiselled marble-like texture:1.2), (polished:1.2), (intricate engravings:1.1), maintaining the shape and features of a knight, (full body:1.2), (high resolution:1.0), (sharp focus:1.0), (realistic textures:1.3), (dramatic lighting:1.0), (riding a horse:1.3)",
+            "Pawn": "(solo) chess piece (realistic:2), (detailed:1.3), (human-like:1.4), (wearing a chess costume:1.3), (metallic sheen:0.7), (chiselled marble-like texture:1.2), (polished:1.2), (intricate engravings:1.1), maintaining the shape and features of a pawn, (full body:1.2), (high resolution:1.0), (sharp focus:1.0), (realistic textures:1.3), (dramatic lighting:1.0)"
         }
 
         image_folder = "whiteImages" if color == "white" else "blackImages"
         image_path = os.path.join(os.path.dirname(__file__), image_folder, f"{piece.lower()}.png")
         image_tensor = self.load_image(image_path)
-        return (prompt_map[piece], (image_tensor,))  # Return as a tuple with one element
+        return (prompt_map[piece], image_tensor)
 
 NODE_CLASS_MAPPINGS = {
     "ChessPiecePrompt": ChessPiecePrompt

@@ -16,8 +16,8 @@ class ChessPiecePrompt:
             }
         }
 
-    RETURN_TYPES = ("STRING", "TENSOR", "IMAGE")
-    RETURN_NAMES = ("prompt", "image_tensor", "image_numpy")
+    RETURN_TYPES = ("STRING", "IMAGE")
+    RETURN_NAMES = ("prompt", "image")
 
     FUNCTION = "generate_prompt"
 
@@ -29,7 +29,7 @@ class ChessPiecePrompt:
             image_array = np.array(img).astype(np.float32) / 255.0
             # Convert the numpy array to a PyTorch tensor and adjust dimensions
             image_tensor = torch.tensor(image_array).permute(2, 0, 1).unsqueeze(0)
-            return image_tensor, image_array
+            return image_tensor
 
     def generate_prompt(self, piece, color):
         prompt_map = {
@@ -43,8 +43,8 @@ class ChessPiecePrompt:
 
         image_folder = "whiteImages" if color == "white" else "blackImages"
         image_path = os.path.join(os.path.dirname(__file__), image_folder, f"{piece.lower()}.png")
-        image_tensor, image_array = self.load_image(image_path)
-        return (prompt_map[piece], image_tensor, image_array)
+        image_tensor = self.load_image(image_path)
+        return (prompt_map[piece], (image_tensor,))  # Return as a tuple with one element
 
 NODE_CLASS_MAPPINGS = {
     "ChessPiecePrompt": ChessPiecePrompt
